@@ -1,16 +1,14 @@
 import React from 'react'
 import './PayrollHome.css';
-import logo from './logo.png';
-import icons1 from './Add.jpg'
-import icons2 from './download.png'
-import icons3 from './download edit.png'
+import logo from './logo1.png';
+import icons1 from './add-24px.svg'
 import { Link } from 'react-router-dom';
 
-function Home() {
+function PayrollHome() {
     return (
         <div>
-            <header class="header-content header">
-                <div class="logo-content">
+            <header className="header-content header">
+                <div className='logo-content'>
                     <img src={logo} alt="logo"/>
                     <div>
                         <span class="emp-text">EMPLOYEE</span><br/>
@@ -21,37 +19,29 @@ function Home() {
             <div class="main-content">
 		<div class="header-content">
 			<div class="emp-detail-text">
-				Employee Details<div class="emp-count">10</div>
+				Employee Details<div className="emp-count">10</div>
 			</div>
-			<a><Link to="/add" class="add-button">
-			<img src={icons1} alt="" /> Add User</Link></a>
+			<a><Link to="/add" className='add-button'>
+			<img src={icons1} alt="Add User" />Add User</Link></a>
 		</div>
 
-		<div class="table-main">
-			<table id="table-display" class="table">
+		<div className="table-main">
+			<table id="table-display" className="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Department</th>
+                        <th>Salary</th>
+                        <th>Start Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
 				<tr>
-					<th></th>
-					<th>Name</th>
-					<th>Gender</th>
-					<th>Department</th>
-					<th>Salary</th>
-					<th>Start Date</th>
-					<th>Actions</th>
-				</tr>
-				<tr>
-					<td><img class="profile" alt="" src="../assests/profile-images/Ellipse -9.png"/></td>
-					<td>Adesh</td>
-					<td>Male</td>
-					<td><div class='Dept-label'>Engineer</div></td>
-					<td>40000</td>
-					<td>15 Oct 2021</td>
-					<td>
-						<img id="1" onclick="remove(this)"
-                        src={icons2}
-                        alt="delete"/>
-                    <img id="1" onclick="update(this)"
-                        src={icons3} alt="edit"/>
-					</td> 
+                    <tbody>
+
+                    </tbody>
 				</tr>
 			</table>
             <script defer src="../js/home.js"></script>
@@ -63,4 +53,4 @@ function Home() {
     )
 }
 
-export default Home;
+export default PayrollHome;
