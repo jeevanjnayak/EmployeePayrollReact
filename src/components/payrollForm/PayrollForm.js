@@ -1,14 +1,14 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import './PayrollForm.css'
 import logo from './logo1.png'
 import profile1 from './download1.jpg'
 import profile2 from './download2.jpg'
 import profile3 from './download3.jpg'
 import profile4 from './download4.jpg'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import EmployeeService from '../../service/EmployeeService'
 
-function PayrollForm() {
+function PayrollForm(props) {
     const allDepartment = ["HR", "Sales", "Finance", "Engineer", "Others"]
     const [formValue, setForm] = useState({
         name: "",
@@ -20,7 +20,38 @@ function PayrollForm() {
         notes: "",
         isUpdate: false,
     });
+    const params = useParams();
+    
+    useEffect(() => {
+        if (params.id) {
+            getDataById(params.id);
+        }
+    });
 
+    const getDataById = (id) => {
+        EmployeeService.getEmployee(id)
+        .then((response) => {
+            let obj = response.data.data;
+            setData(obj);
+        })
+    };
+    const setData = (obj) => {
+        let array = obj.startDate;
+        console.log(obj);
+        console.log()
+        setForm({
+            ...formValue,
+            ...obj,
+            id: obj.id,
+            name:obj.name,
+            department: obj.department,
+            isUpdate:true,
+            day: array[0]+array[1],
+            month: array[3]+array[4]+array[5],
+            year: array[7]+array[8]+array[9]+array[10],
+            notes: obj.notes
+        })
+    };
 
     const onCheckChange = (name) => {
         let index = formValue.department.indexOf(name);
@@ -56,14 +87,31 @@ function PayrollForm() {
             startDate: `${formValue.year}-${formValue.month}-${formValue.day}`,
             notes: formValue.notes
         };
-        EmployeeService.addEmployee(employeeObject).then((response) => {
-            console.log(response);
-            alert("Data Added Successfully! ", response);
-        })
-        localStorage.setItem('EmployeeList', JSON.stringify(employeeObject));
-        console.log(employeeObject);
-        alert(`${formValue.name} has been added!`)
-    }
+        if(formValue.isUpdate) {
+            var answer = window.confirm("Data once modified can't be restored! Do you wish to continue?");
+            if(answer === true) {
+                EmployeeService.editEmployee(params.id, employeeObject)
+                alert("Data updated sucessfully!");
+                props.history.push("");
+                
+            }
+            else{
+                window.location.reload();
+            } 
+        
+        }
+        else{
+            EmployeeService.addEmployee(employeeObject).then((response) => {
+                console.log(response);
+                alert("Data Added Successfully! ", response);
+                window.location.reload();
+            })
+            localStorage.setItem('EmployeeList', JSON.stringify(employeeObject));
+            console.log(employeeObject);
+            alert(`${formValue.name} has been added!`)
+        }
+        
+    };
 
     const onNameChange = (event) => {
         setForm({ ...formValue, [event.target.name]: event.target.value });
@@ -107,21 +155,21 @@ function PayrollForm() {
                             <label>
                                 <input type="radio" id="profile2"
                                     name="profilePic"
-                                    value={profile2} onChange={onNameChange} />
+                                    value="./download2.jpg" onChange={onNameChange} />
                                 <img className="profile" id="image2"
                                     src={profile2} />
                             </label>
                             <label>
                                 <input type="radio" id="profil3"
                                     name="profilePic"
-                                    value={profile3} onChange={onNameChange} />
+                                    value="./download3.jpg" onChange={onNameChange} />
                                 <img className="profile" id="image3"
                                     src={profile3} />
                             </label>
                             <label>
                                 <input type="radio" id="profile4"
                                     name="profilePic"
-                                    value={profile4} onChange={onNameChange} />
+                                    value="./download4.jpg" onChange={onNameChange} />
                                 <img className="profile" id="image4"
                                     src={profile4} />
                             </label>
@@ -207,8 +255,8 @@ function PayrollForm() {
                             <select name="month" id="month" value={formValue.month}
                                 onChange={onNameChange}>
                                 <option value="" >Month</option>
-                                <option value="01">January</option>
-                                <option value="02">Febuary</option>
+                                <option value="Jan">January</option>
+                                <option value="Feb">Febuary</option>
                                 <option value="Mar">March</option>
                                 <option value="Apr">April</option>
                                 <option value="May">May</option>
@@ -241,7 +289,7 @@ function PayrollForm() {
                         <Link to="/" className="resetButton
                         button cancelButton">Cancel</Link>
                         <div className="submit-reset">
-                            <button className="button submitButton" id="submitButton" onClick={onSubmit} type="submit">Submit</button>
+                            <button className="button submitButton" id="submitButton" onClick={onSubmit}  type="submit">Submit</button>
                             <button type="reset" className="button resetButton" id="resetButton" onClick={onReset}>Reset</button>
                         </div>
                     </div>
