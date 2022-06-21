@@ -8,10 +8,10 @@ import profile4 from './download4.jpg'
 import { Link, useParams } from 'react-router-dom'
 import EmployeeService from '../../service/EmployeeService'
 
-function PayrollForm(props) {
-    const allDepartment = ["HR", "Sales", "Finance", "Engineer", "Others"]
-    const [formValue, setForm] = useState({
-        name: "",
+const PayrollForm = (props) => {
+    let startValue = {
+        allDepartment: ["HR", "Sales", "Finance", "Engineer", "Others"],
+        fullName: "",
         profilePic: "",
         gender: "",
         department: [],
@@ -19,21 +19,22 @@ function PayrollForm(props) {
         startDate: "",
         notes: "",
         isUpdate: false,
-    });
+    }
+    const [formValue, setForm] = useState(startValue)
     const params = useParams();
     
     useEffect(() => {
         if (params.id) {
             getDataById(params.id);
         }
-    });
+    },[params.id]);
 
-    const getDataById = (id) => {
-        EmployeeService.getEmployee(id)
+    const getDataById = (employeeId) => {
+        EmployeeService.getEmployee(employeeId)
         .then((response) => {
             let obj = response.data.data;
             setData(obj);
-        })
+        });
     };
     const setData = (obj) => {
         let array = obj.startDate;
@@ -43,9 +44,12 @@ function PayrollForm(props) {
             ...formValue,
             ...obj,
             id: obj.id,
-            name:obj.name,
+            name: obj.name,
             department: obj.department,
-            isUpdate:true,
+            profilePic: obj.profilePic,
+            salary: obj.salary,
+            gender:obj.gender,
+            isUpdate: true,
             day: array[0]+array[1],
             month: array[3]+array[4]+array[5],
             year: array[7]+array[8]+array[9]+array[10],
@@ -66,25 +70,20 @@ function PayrollForm(props) {
     };
     const onReset = () => {
         setForm({
-            name: "",
-            profilePic: "",
-            gender: "",
-            department: [],
-            salary: "",
-            startDate: "",
-            notes: ""
+            ...startValue, id: formValue.id, isUpdate: formValue.isUpdate 
         });
     };
-    const onSubmit = (event) => {
+    const save = (event) => {
         event.preventDefault();
 
         let employeeObject = {
+            id:formValue.employeeId,
             name: formValue.name,
             department: formValue.department,
             gender: formValue.gender,
             salary: formValue.salary,
             profilePic: formValue.profilePic,
-            startDate: `${formValue.year}-${formValue.month}-${formValue.day}`,
+            startDate: `${formValue.day}-${formValue.month}-${formValue.year}`,
             notes: formValue.notes
         };
         if(formValue.isUpdate) {
@@ -92,7 +91,7 @@ function PayrollForm(props) {
             if(answer === true) {
                 EmployeeService.editEmployee(params.id, employeeObject)
                 alert("Data updated sucessfully!");
-                props.history.push("");
+                this.props.history.push("");
                 
             }
             else{
@@ -106,17 +105,18 @@ function PayrollForm(props) {
                 alert("Data Added Successfully! ", response);
                 window.location.reload();
             })
-            localStorage.setItem('EmployeeList', JSON.stringify(employeeObject));
-            console.log(employeeObject);
-            alert(`${formValue.name} has been added!`)
         }
         
-    };
+    }
 
     const onNameChange = (event) => {
         setForm({ ...formValue, [event.target.name]: event.target.value });
         console.log('value for', event.target.name, event.target.value);
     }
+    const checkDepartment = (name) => {
+        return formValue.department && formValue.department.includes(name);
+    }
+
 
     return (
 
@@ -125,15 +125,15 @@ function PayrollForm(props) {
                 <div className='logo-content'>
                     <img src={logo} alt="logo"/>
                     <div>
-                        <span class="emp-text">EMPLOYEE</span><br/>
-                        <span class="emp-text emp-payroll">PAYROLL</span>
+                        <span className="emp-text">EMPLOYEE</span><br/>
+                        <span className="emp-text emp-payroll">PAYROLL</span>
                     </div>
                 </div>
             </header>
 
             <div className="form-content">
                 <form className="form" action="#" onReset="resetForm()"
-                    onSubmit="save()">
+                    onSubmit={ save }>
                     <div className="form-head">
                         Employee Payroll form
                     </div>
@@ -147,28 +147,28 @@ function PayrollForm(props) {
                         <label className="label text" htmlFor="profilePic">Profile image</label>
                         <div className="profile-radio-content">
                             <label>
-                                <input type="radio" id="profile1" name="profilePic"
+                                <input type="radio" id="profile1" name="profilePic" checked={formValue.profilePic === './download1.jpg'}
                                     value="./download1.jpg" onChange={onNameChange} />
                                 <img className="profile" id="image1"
                                     src={profile1} />
                             </label>
                             <label>
                                 <input type="radio" id="profile2"
-                                    name="profilePic"
+                                    name="profilePic" checked={formValue.profilePic === './download2.jpg'}
                                     value="./download2.jpg" onChange={onNameChange} />
                                 <img className="profile" id="image2"
                                     src={profile2} />
                             </label>
                             <label>
                                 <input type="radio" id="profil3"
-                                    name="profilePic"
+                                    name="profilePic" checked={formValue.profilePic === './download3.jpg'}
                                     value="./download3.jpg" onChange={onNameChange} />
                                 <img className="profile" id="image3"
                                     src={profile3} />
                             </label>
                             <label>
                                 <input type="radio" id="profile4"
-                                    name="profilePic"
+                                    name="profilePic" checked={formValue.profilePic === './download4.jpg'}
                                     value="./download4.jpg" onChange={onNameChange} />
                                 <img className="profile" id="image4"
                                     src={profile4} />
@@ -178,10 +178,10 @@ function PayrollForm(props) {
                     <div className="row-content">
                         <label htmlFor="gender" className="label text">Gender</label>
                         <div>
-                            <input type="radio" id="male" name="gender"
+                            <input type="radio" id="male" name="gender" checked={formValue.gender === 'male'}
                                 value="male" onChange={onNameChange} />
                             <label htmlFor="male" className="text">Male</label>
-                            <input type="radio" id="female" name="gender"
+                            <input type="radio" id="female" name="gender" checked={formValue.gender === 'male'}
                                 value="female" onChange={onNameChange} />
                             <label htmlFor="female" className="text">Female</label>
                         </div>
@@ -191,12 +191,14 @@ function PayrollForm(props) {
                             Department
                         </label>
                         <div className="label-dep">
-                            {allDepartment.map((item) => (
+                            {formValue.allDepartment.map((item) => (
                                 <span key={item}>
                                     <input
                                         className="checkbox"
                                         type="checkbox"
+                                        name = { item }
                                         onChange={() => onCheckChange(item)}
+                                        checked={checkDepartment(item)}
                                         value={item}
                                     />
                                     <label className="text" htmlFor={item}>
@@ -286,10 +288,10 @@ function PayrollForm(props) {
                             value={formValue.notes} placeholder="" onChange={onNameChange}></textarea>
                     </div>
                     <div className="buttonParent">
-                        <Link to="/" className="resetButton
+                        <Link to="/home" className="resetButton
                         button cancelButton">Cancel</Link>
                         <div className="submit-reset">
-                            <button className="button submitButton" id="submitButton" onClick={onSubmit}  type="submit">Submit</button>
+                        <button type="submit" className="button submitButton" id="submitButton">{formValue.isUpdate ? 'Update' : 'Submit'}</button>
                             <button type="reset" className="button resetButton" id="resetButton" onClick={onReset}>Reset</button>
                         </div>
                     </div>

@@ -53,14 +53,14 @@ class PayrollHome extends Component {
                     <div className='logo-content'>
                         <img src={logo} alt="logo"/>
                         <div>
-                            <span class="emp-text">EMPLOYEE</span><br/>
-                            <span class="emp-text emp-payroll">PAYROLL</span>
+                            <span className="emp-text">EMPLOYEE</span><br/>
+                            <span className="emp-text emp-payroll">PAYROLL</span>
                         </div>
                     </div>
                 </header>
-                <div class="main-content">
-                    <div class="header-content">
-                    <div class="emp-detail-text">
+                <div className="main-content">
+                    <div className="header-content">
+                    <div className="emp-detail-text">
                         Employee Details<div className="emp-count">{this.state.employee.length}</div>
                     </div>
                     <Link to="/add" className='add-button'>
@@ -77,6 +77,7 @@ class PayrollHome extends Component {
                                 <th>Department</th>
                                 <th>Salary</th>
                                 <th>Start Date</th>
+                                <th>Notes</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -97,11 +98,12 @@ class PayrollHome extends Component {
                                 </td>
                                 <td>{employee.salary}</td>
                                 <td>{employee.startDate}</td>
+                                <td>{ employee.notes }</td>
                                 <td>
                                 <img src={deletes} alt="delete" onClick={() =>
                                                         this.deleteEmployee(employee.id)}/>
                                 <img src={edit} alt="edit" onClick={() =>
-                                                        this.editEmployee(employee.employeeId)} />
+                                                        this.editEmployee(employee.id)} />
                                 </td>
                             </tr>
                         ))}
