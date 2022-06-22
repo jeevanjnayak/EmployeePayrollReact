@@ -155,7 +155,7 @@ td img :first-child {
 
 td img {
     cursor: pointer;
-    width: 20px;
+    width: auto;
     height: 30px;
 }
 

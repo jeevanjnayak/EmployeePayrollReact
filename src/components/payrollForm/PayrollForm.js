@@ -181,7 +181,7 @@ const PayrollForm = (props) => {
                             <input type="radio" id="male" name="gender" checked={formValue.gender === 'male'}
                                 value="male" onChange={onNameChange} />
                             <label htmlFor="male" className="text">Male</label>
-                            <input type="radio" id="female" name="gender" checked={formValue.gender === 'male'}
+                            <input type="radio" id="female" name="gender" checked={formValue.gender === 'female'}
                                 value="female" onChange={onNameChange} />
                             <label htmlFor="female" className="text">Female</label>
                         </div>
@@ -225,12 +225,12 @@ const PayrollForm = (props) => {
                                 <option value="01">1</option>
                                 <option value="02">2</option>
                                 <option value="03">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
+                                <option value="04">4</option>
+                                <option value="05">5</option>
+                                <option value="06">6</option>
+                                <option value="07">7</option>
+                                <option value="08">8</option>
+                                <option value="09">9</option>
                                 <option value="10">10</option>
                                 <option value="11">11</option>
                                 <option value="12">12</option>
@@ -291,7 +291,7 @@ const PayrollForm = (props) => {
                         <Link to="/home" className="resetButton
                         button cancelButton">Cancel</Link>
                         <div className="submit-reset">
-                        <button type="submit" className="button submitButton" id="submitButton">{formValue.isUpdate ? 'Update' : 'Submit'}</button>
+                            <button type="submit" className="button submitButton" id="submitButton">{formValue.isUpdate ? 'Update' : 'Submit'}</button>
                             <button type="reset" className="button resetButton" id="resetButton" onClick={onReset}>Reset</button>
                         </div>
                     </div>
